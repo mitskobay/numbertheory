@@ -5,6 +5,13 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>The Euclidean Algorithm on Square Roots</title>
 
+  <style>
+    input {
+      height: 1rem;
+      width: 3rem;
+      margin-bottom: 0.5rem;
+    }
+  </style>
   <script>
     MathJax = {
       tex: {
@@ -18,8 +25,35 @@
   <script type="text/javascript" id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js"></script>
 </head>
 <body>
-  This page will calculate the Euclidean algorithm between $1$ and $\sqrt d$.
+  <p>This page will calculate the Euclidean algorithm between $\sqrt d$ and $1$.</p>
 
-  \[a+b=c.\]
+  <p>We first determine the continued fraction expansion using Euler's algorithm.</p>
+
+  <h3>Euler's Algorithm</h3>
+  <p>Euler's algorithm finds the continued fraction expansion $[a_0,a_1,\dots]$ of a quadratic irrational
+    \[\frac{\sqrt d+b_0}{c_0}\]
+    such that $c_0\mid d-b_0^2$. To initialize the algorithm, we set
+    \[a_0=\left\lfloor\frac{\sqrt d+b_0}{c_0}.\right\rfloor\]
+    Then we successively calculate
+    \[b_{n+1}=a_nc_n-b_n,\quad c_{n+1}=\frac{d-b_{n+1}^2}{c_n},\quad a_{n+1}=\left\lfloor\frac{\sqrt d+b_{n+1}}{c_{n+1}}.\right\rfloor \]
+  In the special case $b_0=0, c_0=1$ so that the quadratic irrational is $\sqrt d$, Euler streamlined the calculation of $a_{n+1}$ by observing that in this case
+  \[b_{n+1}=\left\lfloor\frac{\lfloor\sqrt d\rfloor+b_{n+1}}{c_{n+1}}.\right\rfloor\]
+  so that only integer calculations are involved.
+  </p>
+
+  <input type="number" id="d" name="d" placeholder="d">
+  <button>Submit</button>
+  <p id="dresult"></p>
+  <script>
+    const dbtn = document.querySelector('button');
+    const dinput = document.querySelector('input');
+    const dresult = document.querySelector('#dresult');
+
+    dbtn.addEventListener('click', () => {
+      const dValue = dinput.value;
+      dresult.innerHTML = `We will calculate $\\sqrt{${dValue}}$.`;
+      MathJax.typesetPromise();
+    })
+  </script>
 </body>
 </html>
