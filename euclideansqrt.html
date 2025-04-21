@@ -41,17 +41,38 @@
   so that only integer calculations are involved.
   </p>
 
+  <label for="d">Calculate the continued fraction expansion of $\sqrt d$ out to $n$ terms (default $n=5$):</label>
   <input type="number" id="d" name="d" placeholder="d">
+  <input type="number" id="n" name="n" placeholder="n">
   <button>Submit</button>
   <p id="dresult"></p>
   <script>
     const dbtn = document.querySelector('button');
-    const dinput = document.querySelector('input');
+    const dinput = document.querySelector('#d');
+    const ninput = document.querySelector('#n');
     const dresult = document.querySelector('#dresult');
 
     dbtn.addEventListener('click', () => {
       const dValue = dinput.value;
-      dresult.innerHTML = `We will calculate $\\sqrt{${dValue}}$.`;
+      var nValue = ninput.value;
+      if(!ninput || !nValue) nValue=5;
+
+      const a0 = Math.floor(Math.sqrt(dValue));
+      var a = a0;
+      var b = 0;
+      var c = 1;
+      const d = dValue;
+
+      var terms = `$[${a}`;
+      for(let i = 0; i<nValue; i++){
+        b=a*c-b;
+        c=(d-b*b)/c;
+        a=Math.floor((a0+b)/c);
+        terms += `, ${a}`;
+      }
+      terms += `,\\dots]$`;
+
+      dresult.innerHTML = terms;
       MathJax.typesetPromise();
     })
   </script>
