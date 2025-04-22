@@ -7,6 +7,7 @@
 
   <style>
     body {
+      font-family: Verdana, sans-serif;
       background: lightblue;
     }
 
@@ -29,13 +30,13 @@
   <script type="text/javascript" id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js"></script>
 </head>
 <body>
-  <h1>Some $\sqrt d$ calculations</h1>
-  <p>Given $d$, this page calculates the continued fraction expansion of $\sqrt d$ out to $n$ terms, as well as the Euclidean algorithm on $\sqrt d, 1$.</p>
+  <h1>Some $\sqrt d$ Calculations</h1>
+  <p>Given $d$, this page calculates the continued fraction expansion of $\sqrt d$ out to 5 terms, or to any number $n$ of terms you like, as well as the Euclidean algorithm on $\sqrt d, 1$.</p>
   
 
-  <label for="d">Please specify $d$ for $\sqrt d$ and the number of terms $n$ (optional, default $n=5$):</label>
+  <label for="d">Please specify $d$ for $\sqrt d$ (and optionally the number of terms $n$):</label>
   <input type="number" id="d" name="d" placeholder="d">
-  <input type="number" id="n" name="n" placeholder="n">
+  <input type="number" id="n" name="n" placeholder="n=5">
   <button>Submit</button>
   <p id="dresult"></p>
 
