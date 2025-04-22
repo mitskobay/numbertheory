@@ -3,9 +3,13 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>The Euclidean Algorithm on Square Roots</title>
+  <title>Some Square Root Calculations</title>
 
   <style>
+    body {
+      background: lightblue;
+    }
+
     input {
       height: 1rem;
       width: 3rem;
@@ -25,27 +29,19 @@
   <script type="text/javascript" id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js"></script>
 </head>
 <body>
-  <p>This page will calculate the Euclidean algorithm between $\sqrt d$ and $1$.</p>
+  <h1>Some $\sqrt d$ calculations</h1>
+  <p>Given $d$, this page calculates the continued fraction expansion of $\sqrt d$ out to $n$ terms, as well as the Euclidean algorithm on $\sqrt d, 1$.</p>
+  
 
-  <p>We first determine the continued fraction expansion using Euler's algorithm.</p>
-
-  <h3>Euler's Algorithm</h3>
-  <p>Euler's algorithm finds the continued fraction expansion $[a_0,a_1,\dots]$ of a quadratic irrational
-    \[\frac{\sqrt d+b_0}{c_0}\]
-    such that $c_0\mid d-b_0^2$. To initialize the algorithm, we set
-    \[a_0=\left\lfloor\frac{\sqrt d+b_0}{c_0}.\right\rfloor\]
-    Then we successively calculate
-    \[b_{n+1}=a_nc_n-b_n,\quad c_{n+1}=\frac{d-b_{n+1}^2}{c_n},\quad a_{n+1}=\left\lfloor\frac{\sqrt d+b_{n+1}}{c_{n+1}}.\right\rfloor \]
-  In the special case $b_0=0, c_0=1$ so that the quadratic irrational is $\sqrt d$, Euler streamlined the calculation of $a_{n+1}$ by observing that in this case
-  \[b_{n+1}=\left\lfloor\frac{\lfloor\sqrt d\rfloor+b_{n+1}}{c_{n+1}}.\right\rfloor\]
-  so that only integer calculations are involved.
-  </p>
-
-  <label for="d">Calculate the continued fraction expansion of $\sqrt d$ out to $n$ terms (default $n=5$):</label>
+  <label for="d">Please specify $d$ for $\sqrt d$ and the number of terms $n$ (optional, default $n=5$):</label>
   <input type="number" id="d" name="d" placeholder="d">
   <input type="number" id="n" name="n" placeholder="n">
   <button>Submit</button>
   <p id="dresult"></p>
+
+
+
+  <p id="eucalg"></p>
   <script>
     const dbtn = document.querySelector('button');
     const dinput = document.querySelector('#d');
@@ -62,19 +58,85 @@
       var b = 0;
       var c = 1;
       const d = dValue;
+      const cf = [];
+      cf[0] = a0;
 
-      var terms = `$[${a}`;
-      for(let i = 0; i<nValue; i++){
+      var terms = `<b>Continued fraction expansion:</b><br><br>$\\sqrt${d}=[${a}`;
+      for(let i = 1; i<nValue; i++){
         b=a*c-b;
         c=(d-b*b)/c;
         a=Math.floor((a0+b)/c);
         terms += `, ${a}`;
+        cf.push(a);
       }
-      terms += `,\\dots]$`;
+      terms += `,\\dots]$<br><br>`;
 
       dresult.innerHTML = terms;
+      //dresult.insertAdjacentHTML("afterend",cf);
+
+      const eucalg = document.querySelector('#eucalg');
+
+      var eucalgtext = `<b>Euclidean algorithm on $\\sqrt ${d}, 1$:</b><br>\\[\\begin{align}`;
+
+      const eapairs = [];
+      eapairs[0]=[0,1];
+      eapairs[1]=[1,0];
+
+      for(var i = 0; i<nValue; i++){
+        eapairs[i+2]=add(eapairs[i],multiply(-1*cf[i],eapairs[i+1]));
+        eucalgtext += buildquad(dValue,eapairs,i)+` &= ${cf[i]}\\cdot(`+buildquad(dValue,eapairs,i+1)+`) + (`+buildquad(dValue,eapairs,i+2)+`)\\\\`;
+      }
+
+      eucalgtext += `\\end{align}\\]<br>`;
+
+      eucalg.innerHTML = eucalgtext;
+
+      //eucalg.insertAdjacentHTML("afterend", eapairs)
       MathJax.typesetPromise();
+
     })
+
+    function buildquad(d,pairs,i) { // get ready for spaghetti!
+      var text=``;
+      if(pairs[i][0]!=0)
+        text += pairs[i][0];
+      if(pairs[i][1]!=0){
+        if(pairs[i][1]>0 && pairs[i][0]!=0){
+          text+= `+`;
+          if(pairs[i][1]!=1)
+            text+=pairs[i][1];
+        }
+        else{
+          if(pairs[i][1]!=1 && pairs[i][1]!=-1)
+            text+=pairs[i][1];
+          else if(pairs[i][1]==-1)
+            text+=`-`;
+        }
+      text += `\\sqrt ${d}`;
+      }
+
+      return text;
+    }
+
+    function multiply(m,a){
+      return [m*a[0],m*a[1]];
+    }
+    function add(a,b){
+      return [a[0]+b[0],a[1]+b[1]];
+    }
   </script>
+
+
+<h2>Euler's Algorithm</h2>
+<p>The code used to find the continued fraction expansion is based on Euler's algorithm. Euler's algorithm finds the continued fraction expansion $[a_0,a_1,\dots]$ of a quadratic irrational
+  \[\frac{\sqrt d+b_0}{c_0}\]
+  such that $c_0\mid d-b_0^2$. To initialize the algorithm, we set
+  \[a_0=\left\lfloor\frac{\sqrt d+b_0}{c_0}.\right\rfloor\]
+  Then we successively calculate
+  \[b_{n+1}=a_nc_n-b_n,\quad c_{n+1}=\frac{d-b_{n+1}^2}{c_n},\quad a_{n+1}=\left\lfloor\frac{\sqrt d+b_{n+1}}{c_{n+1}}.\right\rfloor \]
+In the special case $b_0=0, c_0=1$ so that the quadratic irrational is $\sqrt d$, Euler streamlined the calculation of $a_{n+1}$ by observing that in this case
+\[b_{n+1}=\left\lfloor\frac{\lfloor\sqrt d\rfloor+b_{n+1}}{c_{n+1}}.\right\rfloor\]
+so that only integer calculations are involved.
+</p>
 </body>
 </html>
