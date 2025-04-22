@@ -14,7 +14,12 @@
     input {
       height: 1rem;
       width: 3rem;
-      margin-bottom: 0.5rem;
+      margin-top: 0.5rem;
+    }
+
+    .block {
+      width: 550px;
+      margin: 0 auto;
     }
   </style>
   <script>
@@ -30,11 +35,12 @@
   <script type="text/javascript" id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js"></script>
 </head>
 <body>
+  <div class="block">
   <h1>Some $\sqrt d$ Calculations</h1>
   <p>Given $d$, this page calculates the continued fraction expansion of $\sqrt d$ out to 5 terms, or to any number $n$ of terms you like, as well as the Euclidean algorithm on $\sqrt d, 1$.</p>
   
 
-  <label for="d">Please specify $d$ for $\sqrt d$ (and optionally the number of terms $n$):</label>
+  <label for="d">Please specify $d$ for $\sqrt d$ (and optionally $n$, the number of terms):</label><br>
   <input type="number" id="d" name="d" placeholder="d">
   <input type="number" id="n" name="n" placeholder="n=5">
   <button>Submit</button>
@@ -139,5 +145,6 @@ In the special case $b_0=0, c_0=1$ so that the quadratic irrational is $\sqrt d$
 \[b_{n+1}=\left\lfloor\frac{\lfloor\sqrt d\rfloor+b_{n+1}}{c_{n+1}}.\right\rfloor\]
 so that only integer calculations are involved.
 </p>
+</div>
 </body>
 </html>
