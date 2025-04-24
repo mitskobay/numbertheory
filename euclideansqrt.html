@@ -44,19 +44,16 @@
 <body>
   <div class="border">
   <div class="block">
-  <h1>Some $\sqrt d$ Calculations</h1>
+  <h1>Some $\boldsymbol{\sqrt{d}}$ Calculations</h1>
   <p>Given $d$, this page uses <a href="euler.html">Euler's algorithm</a> to calculate the continued fraction expansion of $\sqrt{d}$ out to 5 terms, or to a specified number $n$ of terms, as well as the Euclidean algorithm on $\sqrt d$ and $1$.</p>
   
-
-  <label for="d">Please specify $d$ (and optionally $n$):</label><br>
   <input type="number" id="d" name="d" placeholder="d">
   <input type="number" id="n" name="n" placeholder="n=5">
   <button>Submit</button>
   <p id="dresult"></p>
 
-
-
   <p id="eucalg"></p>
+
   <script>
     const dbtn = document.querySelector('button');
     const dinput = document.querySelector('#d');
