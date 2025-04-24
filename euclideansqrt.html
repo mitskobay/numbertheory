@@ -17,6 +17,13 @@
       margin-top: 0.5rem;
     }
 
+    .border{
+      background: white;
+      margin: 0 auto;
+      padding: 1rem;
+      width:570px;
+    }
+
     .block {
       width: 550px;
       margin: 0 auto;
@@ -35,12 +42,13 @@
   <script type="text/javascript" id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js"></script>
 </head>
 <body>
+  <div class="border">
   <div class="block">
   <h1>Some $\sqrt d$ Calculations</h1>
-  <p>Given $d$, this page calculates the continued fraction expansion of $\sqrt d$ out to 5 terms, or to any number $n$ of terms you like, as well as the Euclidean algorithm on $\sqrt d, 1$.</p>
+  <p>Given $d$, this page uses <a href="euler.html">Euler's algorithm</a> to calculate the continued fraction expansion of $\sqrt{d}$ out to 5 terms, or to a specified number $n$ of terms, as well as the Euclidean algorithm on $\sqrt d$ and $1$.</p>
   
 
-  <label for="d">Please specify $d$ for $\sqrt d$ (and optionally $n$, the number of terms):</label><br>
+  <label for="d">Please specify $d$ (and optionally $n$):</label><br>
   <input type="number" id="d" name="d" placeholder="d">
   <input type="number" id="n" name="n" placeholder="n=5">
   <button>Submit</button>
@@ -68,7 +76,7 @@
       const cf = [];
       cf[0] = a0;
 
-      var terms = `<b>Continued fraction expansion:</b><br><br>$\\sqrt${d}=[${a}`;
+      var terms = `<b>Continued fraction expansion:</b><br><br>$\\sqrt{${d}}=[${a}`;
       for(let i = 1; i<nValue; i++){
         b=a*c-b;
         c=(d-b*b)/c;
@@ -83,7 +91,7 @@
 
       const eucalg = document.querySelector('#eucalg');
 
-      var eucalgtext = `<b>Euclidean algorithm on $\\sqrt ${d}, 1$:</b><br>\\[\\begin{align}`;
+      var eucalgtext = `<b>Euclidean algorithm on $\\sqrt {${d}}, 1$:</b><br>\\[\\begin{align}`;
 
       const eapairs = [];
       eapairs[0]=[0,1];
@@ -119,7 +127,7 @@
           else if(pairs[i][1]==-1)
             text+=`-`;
         }
-      text += `\\sqrt ${d}`;
+      text += `\\sqrt {${d}}`;
       }
 
       return text;
@@ -134,17 +142,8 @@
   </script>
 
 
-<h2>Euler's Algorithm</h2>
-<p>The code used to find the continued fraction expansion is based on Euler's algorithm. Euler's algorithm finds the continued fraction expansion $[a_0,a_1,\dots]$ of a quadratic irrational
-  \[\frac{\sqrt d+b_0}{c_0}\]
-  such that $c_0\mid d-b_0^2$. To initialize the algorithm, we set
-  \[a_0=\left\lfloor\frac{\sqrt d+b_0}{c_0}.\right\rfloor\]
-  Then we successively calculate
-  \[b_{n+1}=a_nc_n-b_n,\quad c_{n+1}=\frac{d-b_{n+1}^2}{c_n},\quad a_{n+1}=\left\lfloor\frac{\sqrt d+b_{n+1}}{c_{n+1}}.\right\rfloor \]
-In the special case $b_0=0, c_0=1$ so that the quadratic irrational is $\sqrt d$, Euler streamlined the calculation of $a_{n+1}$ by observing that in this case
-\[a_{n+1}=\left\lfloor\frac{\lfloor\sqrt d\rfloor+b_{n+1}}{c_{n+1}}.\right\rfloor\]
-so that only integer calculations are involved.
-</p>
+
+</div>
 </div>
 </body>
 </html>

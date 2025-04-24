@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Euler's Algorithm</title>
+
+  <style>
+    body {
+      font-family: Verdana, sans-serif;
+      background: lightblue;
+    }
+
+    input {
+      height: 1rem;
+      width: 3rem;
+      margin-top: 0.5rem;
+    }
+
+    .border{
+      background: white;
+      margin: 0 auto;
+      padding: 1rem;
+      width:570px;
+    }
+
+    .block {
+      width: 550px;
+      margin: 0 auto;
+    }
+  </style>
+  <script>
+    MathJax = {
+      tex: {
+        inlineMath: [['$', '$'], ['\\(','\\)']]
+      },
+      svg: {
+        fontCache: 'global'
+      }
+    };
+  </script>
+
+  <script type="text/javascript" id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js">
+
+  </script>
+</head>
+<body>
+  <div class="border">
+    <div class="block">
+  <h1>Euler's Algorithm</h1>
+<p>Euler's algorithm finds the continued fraction expansion $[a_0,a_1,\dots]$ of a quadratic irrational
+  \[\frac{\sqrt d+b_0}{c_0}\]
+  such that $c_0\mid d-b_0^2$. To initialize the algorithm, we set
+  \[a_0=\left\lfloor\frac{\sqrt d+b_0}{c_0}\right\rfloor.\]
+  Then we successively calculate
+  \[b_{n+1}=a_nc_n-b_n,\quad c_{n+1}=\frac{d-b_{n+1}^2}{c_n},\quad a_{n+1}=\left\lfloor\frac{\sqrt d+b_{n+1}}{c_{n+1}}\right\rfloor. \]
+In the special case $b_0=0, c_0=1$ so that the quadratic irrational is $\sqrt d$, Euler streamlined the calculation of $a_{n+1}$ by observing that in this case
+\[a_{n+1}=\left\lfloor\frac{\lfloor\sqrt d\rfloor+b_{n+1}}{c_{n+1}}\right\rfloor.\]
+so that only integer calculations are involved.
+</p>
+</div>
+</div>
+</body>
+</html>
