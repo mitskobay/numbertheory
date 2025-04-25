@@ -50,9 +50,12 @@
   <input type="number" id="d" name="d" placeholder="d">
   <input type="number" id="n" name="n" placeholder="n=5">
   <button>Submit</button>
+
   <p id="dresult"></p>
 
   <p id="eucalg"></p>
+  
+  <p id="assign"></p>
 
   <script>
     const dbtn = document.querySelector('button');
@@ -88,7 +91,7 @@
 
       const eucalg = document.querySelector('#eucalg');
 
-      var eucalgtext = `<b>Euclidean algorithm on $\\boldsymbol{\\sqrt {${d}}, 1}$:</b><br>\\[\\begin{align}`;
+      var eucalgtext = `<b>Euclidean algorithm on $\\boldsymbol{\\sqrt {${d}}, 1}$:</b><br><br>\\[\\begin{align}`;
 
       const eapairs = [];
       eapairs[0]=[0,1];
@@ -103,7 +106,37 @@
 
       eucalg.innerHTML = eucalgtext;
 
-      //eucalg.insertAdjacentHTML("afterend", eapairs)
+      const assign = document.querySelector('#assign');
+      const TYPES = 0;
+      const TYPET = 1;
+
+    //var assigntext = "Test text";
+
+      var assigntext = `<b>Assigning Roles to Terms of the Euclidean Algorithm:</b><br><br>\\[\\begin{align}`;
+      
+      var type1 = TYPET;
+      var type2 = TYPES;
+      const assignment = [];
+      var offset;
+
+      assigntext += `test`;
+/*
+      assignment = assignType(type1, type2, cf[i]);
+      assigntext += typeText(type1) + `&=${cf[i]}\\cdot `+typeText(type2)+typeText(type3)+`${offset}\\\\`;
+/*
+      for(var i = 0; i<nValue; i++){
+        assignment = assignType(type1, type2, cf[i]);
+        type3 = assignment[0]
+        offset = assignment[1];
+        assigntext += `${typeText(type1)} &=${cf[i]}\\cdot ${typeText(type2)}+${typeText(type3)}+${offset}\\\\`;
+
+        type1 = type2;
+        type2 = type3;
+      }*/
+      assigntext += `\\end{align}\\]<br>`;
+
+      assign.innerHTML = assigntext;
+
       MathJax.typesetPromise();
 
     })
@@ -124,18 +157,38 @@
           else if(pairs[i][1]==-1)
             text+=`-`;
         }
-      text += `\\sqrt {${d}}`;
+      text += `\\sqrt{${d}}`;
       }
 
       return text;
     }
 
-    function multiply(m,a){
-      return [m*a[0],m*a[1]];
+  function multiply(m,a){
+    return [m*a[0],m*a[1]];
+  }
+  function add(a,b){
+    return [a[0]+b[0],a[1]+b[1]];
+  }
+
+  function assignType(t1, t2, a){
+    if(t1==TYPET && t2==TYPES)
+      return [TYPET,0];
+    if(t1==TYPET && t2==TYPET){
+      if(a%2==0)
+        return [TYPET,a/2];
+      return [TYPES,(a-1)/2];
     }
-    function add(a,b){
-      return [a[0]+b[0],a[1]+b[1]];
+    if(t1==TYPES && t2==TYPET){
+      if(a%2==0)
+        return [TYPES,a/2];
+      return [TYPET,(a+1)/2];
     }
+  }
+
+  function typeText(type){
+    if(type==TYPES) return `S`;
+    if(type==TYPET) return `T`;
+  }
   </script>
 
 
