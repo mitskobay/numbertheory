@@ -76,7 +76,7 @@
       const cf = [];
       cf[0] = a0;
 
-      var terms = `<b>Continued fraction expansion:</b><br><br>$\\sqrt{${d}}=[${a}`;
+      var terms = `<b>Continued fraction expansion:</b><br><br>\\[\\sqrt{${d}}=[${a}`;
       for(let i = 1; i<nValue; i++){
         b=a*c-b;
         c=(d-b*b)/c;
@@ -84,7 +84,7 @@
         terms += `, ${a}`;
         cf.push(a);
       }
-      terms += `,\\dots]$<br><br>`;
+      terms += `,\\dots]\\]<br>`;
 
       dresult.innerHTML = terms;
       //dresult.insertAdjacentHTML("afterend",cf);
@@ -107,30 +107,25 @@
       eucalg.innerHTML = eucalgtext;
 
       const assign = document.querySelector('#assign');
-      const TYPES = `S`;
-      const TYPET = `T`;
 
-    //var assigntext = "Test text";
-
-      var assigntext = `<b>Assigning Roles to Terms of the Euclidean Algorithm:</b><br><br>\\[\\begin{align}`;
+      var assigntext = `<b>Assignments:</b><br><br>\\[\\begin{align}`;
       
-      var type1 = TYPET;
-      var type2 = TYPES;
+      var type1 = `T`;
+      var type2 = `S`;
       var offset =0;
-      //assignment[0] = type2;
-      //assignment[1] = 1;
-      //assigntext += type1 + `&=${cf[0]}\\cdot ` + type2 +`+${offset} + ${assignment}\\\\`;
-      /*
+
       for(var i = 0; i<nValue; i++){
-        //assignment[0] = type1;
         const assignment = assignType(type1, type2, cf[i]);
         type3 = assignment[0];
         offset = assignment[1];
-        assigntext += type1 + ` &=${cf[i]}\\cdot ` + type2 + `+` + type3 +`+${offset}\\\\`;
+        var offsettext = '';
+        if (offset!=0)
+          offsettext = `+${offset}`;
+        assigntext += type1 + ` &=${cf[i]}\\cdot ` + type2 + `+` + type3 +offsettext+`\\\\`;
 
         type1 = type2;
         type2 = type3;
-      }*/
+      }
       assigntext += `\\end{align}\\]<br>`;
 
       assign.innerHTML = assigntext;
@@ -169,22 +164,21 @@
   }
 
   function assignType(t1, t2, a){
-    if(t1==TYPET && t2==TYPES){
-      return [TYPET,0];
+    if(t1==`T` && t2==`S`){
+      return [`T`,0];
     }
-    if(t1==TYPET && t2==TYPET){
+    if(t1==`T` && t2==`T`){
       if(a%2==0) {
-        return [TYPET,a/2];
+        return [`T`,a/2];
       }
-      return [TYPES,(a-1)/2];
+      return [`S`,(a-1)/2];
     }
-    if(t1==TYPES && t2==TYPET){
+    if(t1==`S` && t2==`T`){
       if(a%2==0){
-        return [TYPES,a/2];
+        return [`S`,a/2];
       }
-      return [TYPET, (a+1)/2];
+      return [`T`, (a+1)/2];
     }
-    return [TYPES, 0];
   }
   </script>
 
