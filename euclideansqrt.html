@@ -59,6 +59,8 @@
 
   <p id="assign1"></p>
 
+  <p id="figures"></p>
+
   <script>
     const dbtn = document.querySelector('button');
     const dinput = document.querySelector('#d');
@@ -214,6 +216,53 @@
 
       assign1.innerHTML = assign1text;
 
+      const figures = document.querySelector('#figures');
+
+      //eapairs = [];
+      eapairs[0]=[0,1];
+      eapairs[1]=[1,0];
+      const measurements = [];
+
+      for(var i = 0; i<nValue; i++){
+        const row = [];
+        eapairs[i+2]=add(eapairs[i],multiply(-1*cf[i],eapairs[i+1]));
+        row[0] = calcquad(dValue,eapairs,i);
+        row[1] = cf[i];
+        row[2] = calcquad(dValue,eapairs,i+1);
+        row[3] = calcquad(dValue,eapairs,i+2);
+        measurements[i]=row;
+      }
+
+      // first figure
+      let u=50;
+      let nside=measurements[0][0];
+      let kside=measurements[0][1];
+      let mside=measurements[0][2];
+      let aside=measurements[0][3];
+
+      let noffset=[10,10];
+      let nv1=add([0,0],noffset);
+      let nv2=add([0,u*nside/mside],noffset);
+      let nv3=add([u*nside/mside,u*nside/mside],noffset);
+      
+      let moffset=add(noffset,[0,u*aside]);
+
+      let squarestext = buildsquares(mside,kside,u,moffset);
+
+      var figurestext = `<b>Figures</b><br><br>`;
+
+      var figureswidth = u*nside+2*noffset[0];
+      var figuresheight = u*nside+2*noffset[1];
+
+      figurestext += `<svg width="${figureswidth}" height="${figuresheight}" xmlns="http://www.w3.org/2000/svg" style="display: block; margin: auto">`;
+      figurestext += `<polygon points="${nv1[0]},${nv1[1]} ${nv2[0]},${nv2[1]} ${nv3[0]},${nv3[1]}" style="stroke:red; stroke-width:4; fill: pink; opacity:0.5" />`
+
+      figurestext += `<g opacity="0.5">`;
+      figurestext += squarestext;
+      figurestext += `</g>`;
+      figurestext += `</svg>`;
+      figures.innerHTML = figurestext;
+
       MathJax.typesetPromise();
 
     })
@@ -300,6 +349,30 @@
       return `a`;
     }
   }
+
+  function calcquad(d,pairs,i) {
+      return pairs[i][0]+Math.sqrt(d)*pairs[i][1];
+    }
+
+  function buildsquares(m,k,scale,offset){
+
+    let xcoords = [];
+    let ycoords = [];
+    for(let i=0; i<=k; i++){
+      xcoords[i]=i*m*scale+offset[0];
+      ycoords[i]=i*m*scale+offset[1];
+    }
+
+    let gridtext=``;
+    gridtext+=`<polygon points="${xcoords[0]},${ycoords[0]} ${xcoords[0]},${ycoords[k]} ${xcoords[k]},${ycoords[k]} ${xcoords[k]},${ycoords[0]}" style="stroke:green; stroke-width:4; fill:aquamarine" />`;
+    for(let i=1; i<k; i++){
+      gridtext += `<line x1="${xcoords[0]}" y1="${ycoords[i]}" x2="${xcoords[k]}" y2="${ycoords[i]}" style="stroke:green; stroke-width:4; fill:aquamarine" />`;
+      gridtext += `<line x1="${xcoords[i]}" y1="${ycoords[0]}" x2="${xcoords[i]}" y2="${ycoords[k]}" style="stroke:green; stroke-width:4; fill:aquamarine" />`;
+    }
+
+    return gridtext;
+  }
+
   </script>
 
 
