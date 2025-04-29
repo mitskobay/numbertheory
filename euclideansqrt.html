@@ -139,7 +139,7 @@
       const assign1 = document.querySelector('#assign1');
 
       var assign1text = `<b>Assignments:</b><br><br>\\[\\begin{align}`;
-      
+      var saveassign1text = [];
       var type1 = `T`;
       var type2 = `S`;
 
@@ -201,7 +201,7 @@
             offsettext = `+${offset}`;
 
         assign1text += text1 + text1prime + ` &=${cf[i]}\\cdot ` + text2 + text2prime + `+` + text3 + text3prime + offsettext+`\\\\`;
-
+        saveassign1text[i]=text1 + text1prime + `=${cf[i]}\\cdot ` + text2 + text2prime + `+` + text3 + text3prime + offsettext;
         type1 = type2;
         type2 = type3;
 
@@ -261,6 +261,33 @@
       figurestext += squarestext;
       figurestext += `</g>`;
       figurestext += `</svg>`;
+      figurestext += `\\[` + saveassign1text[0] + `\\]`;
+/*
+      // second figure
+      u=50;
+      let side1=measurements[0][0];
+      let sidek=measurements[0][1];
+      let side2=measurements[0][2];
+      let side3=measurements[0][3];
+
+      let aoffset=[10,10];
+      moffset=add(aoffset,[0,side2]);
+      figureswidth = u*side1+2*aoffset[0];
+      figuresheight = u*side1+2*aoffset[1];
+
+
+      figurestext += `<svg width="${figureswidth}" height="${figuresheight}" xmlns="http://www.w3.org/2000/svg" style="display: block; margin: auto">`;
+      figurestext += `<g opacity="0.5">`;
+      figurestext += buildm1m2(side1,side2,u,moffset);
+      figurestext += `</g>`;
+
+      figurestext += `<g opacity="0.5">`;
+      figurestext += builda1a2(side1+side2,side2,u,aoffset);
+      figurestext += `</g>`;
+      figurestext += `</svg>`;
+      figurestext += `\\[` + saveassign1text[1] + `\\]`;
+*/
+
       figures.innerHTML = figurestext;
 
       MathJax.typesetPromise();
@@ -369,8 +396,49 @@
       gridtext += `<line x1="${xcoords[0]}" y1="${ycoords[i]}" x2="${xcoords[k]}" y2="${ycoords[i]}" style="stroke:green; stroke-width:4; fill:aquamarine" />`;
       gridtext += `<line x1="${xcoords[i]}" y1="${ycoords[0]}" x2="${xcoords[i]}" y2="${ycoords[k]}" style="stroke:green; stroke-width:4; fill:aquamarine" />`;
     }
+    return gridtext;
+  }
+
+  function buildm1m2(m1,m2,scale,offset){
+    let xcoords=[];
+    let ycoords=[];
+    xcoords[0]=offset[0];
+    ycoords[0]=offset[1];
+    xcoords[1]=(m1-m2)*scale+offset[0];
+    ycoords[1]=m2*scale+offset[1];
+    xcoords[2]=m1*scale+offset[0];
+    ycoords[2]=m1*scale+offset[1];
+
+    let gridtext=``;
+    gridtext+=`<polygon points="${xcoords[0]},${ycoords[0]} ${xcoords[0]},${ycoords[2]} ${xcoords[2]},${ycoords[2]} ${xcoords[2]},${ycoords[0]}" style="stroke:green; stroke-width:4; fill:aquamarine" />`;
+    gridtext += `<line x1="${xcoords[0]}" y1="${ycoords[1]}" x2="${xcoords[2]}" y2="${ycoords[1]}" style="stroke:green; stroke-width:4; fill:aquamarine" />`;
+    gridtext += `<line x1="${xcoords[1]}" y1="${ycoords[0]}" x2="${xcoords[1]}" y2="${ycoords[2]}" style="stroke:green; stroke-width:4; fill:aquamarine" />`;
+    return gridtext;
+  }
+
+  function builda1a2(a1,a2,scale,offset){
+    let xcoords = [];
+    let ycoords = [];
+
+    // triangle
+    xcoords[0] = offset[0];
+    ycoords[0] = offset[1];
+    xcoords[1] = offset[0];
+    ycoords[1] = a1*scale+offset[1];
+    xcoords[2] = a1*scale+offset[0];
+    ycoords[2] = a1*scale+offset[1];
+    // line
+    xcoords[3] = offset[0];
+    ycoords[3] = (a1-a2)*scale+offset[1];
+    xcoords[4] = a2*scale+offset[0];
+    ycoords[4] = a1*scale+offset[1];
+
+    let gridtext=``;
+    gridtext+=`<polygon points="${xcoords[0]},${ycoords[0]} ${xcoords[1]},${ycoords[1]} ${xcoords[2]},${ycoords[2]}" style="stroke:red; stroke-width:4; fill:pink" />`;
+    gridtext += `<line x1="${xcoords[3]}" y1="${ycoords[3]}" x2="${xcoords[4]}" y2="${ycoords[4]}" style="stroke:red; stroke-width:4; fill:pink" />`;
 
     return gridtext;
+
   }
 
   </script>
