@@ -55,7 +55,9 @@
 
   <p id="eucalg"></p>
   
-  <p id="assign"></p>
+  <!--p id="assign"></p-->
+
+  <p id="assign1"></p>
 
   <script>
     const dbtn = document.querySelector('button');
@@ -106,6 +108,7 @@
 
       eucalg.innerHTML = eucalgtext;
 
+      /*
       const assign = document.querySelector('#assign');
 
       var assigntext = `<b>Assignments:</b><br><br>\\[\\begin{align}`;
@@ -118,7 +121,7 @@
         const assignment = assignType(type1, type2, cf[i]);
         type3 = assignment[0];
         offset = assignment[1];
-        var offsettext = '';
+        var offsettext = ``;
         if (offset!=0)
           offsettext = `+${offset}`;
         assigntext += type1 + ` &=${cf[i]}\\cdot ` + type2 + `+` + type3 +offsettext+`\\\\`;
@@ -129,6 +132,87 @@
       assigntext += `\\end{align}\\]<br>`;
 
       assign.innerHTML = assigntext;
+*/
+
+      const assign1 = document.querySelector('#assign1');
+
+      var assign1text = `<b>Assignments:</b><br><br>\\[\\begin{align}`;
+      
+      var type1 = `T`;
+      var type2 = `S`;
+
+      var text1 = `n`;
+      var text2 = `m`;
+      var text3 = `a`;
+
+      var offset = 0;
+
+      var text1prime = ``;
+      var text2prime = ``;
+      var text3prime = ``;
+
+      var aprime = ``;
+      var cprime = ``;
+      var mprime = ``;
+      var nprime = ``;
+      var firsta = true;
+      var firstc = true;
+
+      var offsettext = ``;
+
+      for(var i = 0; i<nValue; i++){
+
+        const assignment = assignType(type1, type2, cf[i]);
+          type3 = assignment[0];
+
+          text3 = findtext3(text1, text2, cf[i]);
+
+            switch(text3) {
+            case `a`:
+              if(!firsta){
+                aprime += `'`;
+              }
+              else firsta = false;
+              text3prime = aprime;
+              break;
+            case `c`:
+              if(!firstc){
+                cprime += `'`;                
+              }
+              else firstc = false;
+
+              text3prime = cprime;
+              break;
+            case `m`:
+              mprime += `'`;
+              text3prime = mprime;
+              break;
+            case `n`:
+              nprime += `'`;
+              text3prime = nprime;
+              break;
+          }
+          
+          offset = assignment[1];
+          offsettext = '';
+          if (offset!=0)
+            offsettext = `+${offset}`;
+
+        assign1text += text1 + text1prime + ` &=${cf[i]}\\cdot ` + text2 + text2prime + `+` + text3 + text3prime + offsettext+`\\\\`;
+
+        type1 = type2;
+        type2 = type3;
+
+        text1 = text2;
+        text2 = text3;
+
+        text1prime = text2prime;
+        text2prime = text3prime;
+
+      }
+      assign1text += `\\end{align}\\]<br>`;
+
+      assign1.innerHTML = assign1text;
 
       MathJax.typesetPromise();
 
@@ -178,6 +262,42 @@
         return [`S`,a/2];
       }
       return [`T`, (a+1)/2];
+    }
+  }
+
+  function findtext3(t1, t2, cfi){
+    if(t1==`n` && t2==`m`){
+      return `a`;
+    }
+    if(t1==`a` && t2==`m`){
+      return `a`;
+    }
+    if(t1==`c` && t2==`m`){
+      return `c`;
+    }
+    if(t1==`a` && t2==`c`){
+      if(cfi%2==0) {
+        return `a`;
+      }
+      return `m`;
+    }
+    if(t1==`c` && t2==`a`){
+      if(cfi%2==0) {
+        return `c`;
+      }
+      return `m`;
+    }
+    if(t1==`m` && t2==`a`){
+      if(cfi%2==0){
+        return `m`;
+      }
+      return `c`;
+    }
+    if(t1==`m` && t2==`c`){
+      if(cfi%2==0){
+        return `m`;
+      }
+      return `a`;
     }
   }
   </script>
