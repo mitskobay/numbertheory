@@ -140,6 +140,8 @@
 
       var assign1text = `<b>Assignments:</b><br><br>\\[\\begin{align}`;
       var saveassign1text = [];
+      var saveassignments = [];
+
       var type1 = `T`;
       var type2 = `S`;
 
@@ -166,6 +168,7 @@
 
         const assignment = assignType(type1, type2, cf[i]);
           type3 = assignment[0];
+          saveassignments[i]=[type1, type2, type3];
 
           text3 = findtext3(text1, text2, cf[i]);
 
@@ -255,7 +258,7 @@
       var figuresheight = u*nside+2*noffset[1];
 
       figurestext += `<svg width="${figureswidth}" height="${figuresheight}" xmlns="http://www.w3.org/2000/svg" style="display: block; margin: auto">`;
-      figurestext += `<polygon points="${nv1[0]},${nv1[1]} ${nv2[0]},${nv2[1]} ${nv3[0]},${nv3[1]}" style="stroke:red; stroke-width:4; fill: pink; opacity:0.5" />`
+      figurestext += `<polygon points="${nv1[0]},${nv1[1]} ${nv2[0]},${nv2[1]} ${nv3[0]},${nv3[1]}" style="stroke:red; stroke-width:4; fill: pink" />`
 
       figurestext += `<g opacity="0.5">`;
       figurestext += squarestext;
@@ -287,6 +290,15 @@
       figurestext += `</svg>`;
       figurestext += `\\[` + saveassign1text[1] + `\\]`;
 */
+
+// test figure
+figurestext += `<svg width="300" height="500" xmlns="http://www.w3.org/2000/svg" style="display: block; margin: auto">`;
+
+      //figurestext += buildm1m2(side1,side2,u,moffset);
+      //figurestext += build2atiles(8, 1, u, [10,10]);
+      figurestext += buildTTT(9, 4, 2, 1, 20, [10,30]);
+
+      figurestext += `</svg>`;
 
       figures.innerHTML = figurestext;
 
@@ -441,6 +453,234 @@
 
   }
 
+  function build2atiles(k, a, scale, offset){
+    let xcoords = [];
+    let ycoords = [];
+
+    let k2=k/2;
+    for(let i=0; i<=k2; i++){
+      xcoords[i]=i*2*a*scale+offset[0];
+      ycoords[i]=i*2*a*scale+offset[1];
+    }
+
+    let xcoordsdiagonal = [];
+    let ycoordsdiagonal = [];
+
+    for(let i=0; i<k2; i++){
+      xcoordsdiagonal[i]=(i*2+1)*a*scale+offset[0];
+      ycoordsdiagonal[i]=(i*2+1)*a*scale+offset[1];
+    }
+
+    let figurestext=``;
+
+    /* replace with triangles */
+    for(let i=0; i<k2; i++){ // diagonals abutting left side
+      figurestext += `<line x1="${xcoords[0]}" y1="${ycoordsdiagonal[i]}" x2="${xcoordsdiagonal[k2-i-1]}" y2="${ycoords[k2]}" style="stroke:red; stroke-width:4; fill:aquamarine" />`;
+    }
+    for(let i=0; i<k2; i++){ // diagonals abutting top side
+      figurestext += `<line x1="${xcoordsdiagonal[i]}" y1="${ycoords[0]}" x2="${xcoords[k2]}" y2="${ycoordsdiagonal[k2-i-1]}" style="stroke:red; stroke-width:4; fill:aquamarine" />`;
+    }
+
+
+    figurestext+=`<polygon points="${xcoords[0]},${ycoords[0]} ${xcoords[0]},${ycoords[k2]} ${xcoords[k2]},${ycoords[k2]} ${xcoords[k2]},${ycoords[0]}" style="stroke:green; stroke-width:4; fill:aquamarine" />`;
+    for(let i=1; i<k2; i++){
+      figurestext += `<line x1="${xcoords[0]}" y1="${ycoords[i]}" x2="${xcoords[k2]}" y2="${ycoords[i]}" style="stroke:green; stroke-width:4; fill:aquamarine" />`;
+      figurestext += `<line x1="${xcoords[i]}" y1="${ycoords[0]}" x2="${xcoords[i]}" y2="${ycoords[k2]}" style="stroke:green; stroke-width:4; fill:aquamarine" />`;
+    }
+   
+    // triangles
+    var basictrianglex = [0,1,0];
+    var basictriangley = [0,0,-1];
+
+    figurestext += `<g opacity="0.5">`;
+    for(let i=0; i<k2; i++){
+    for(let j=1; j<=k2+1; j++){
+      figurestext += `<polygon points="${basictrianglex[0]*a*scale+xcoords[i]},${basictriangley[0]*a*scale+ycoords[j]} ${basictrianglex[1]*a*scale+xcoords[i]},${basictriangley[1]*a*scale+ycoords[j]} ${basictrianglex[2]*a*scale+xcoords[i]},${basictriangley[2]*a*scale+ycoords[j]}" style="stroke:red; stroke-width:4; fill:pink"/>`;      
+    }
+    }
+    for(let i=1; i<=k2; i++){
+    for(let j=0; j<k2; j++){
+      figurestext += `<polygon points="${-1*basictrianglex[0]*a*scale+xcoords[i]},${-1*basictriangley[0]*a*scale+ycoords[j]} ${-1*basictrianglex[1]*a*scale+xcoords[i]},${-1*basictriangley[1]*a*scale+ycoords[j]} ${-1*basictrianglex[2]*a*scale+xcoords[i]},${-1*basictriangley[2]*a*scale+ycoords[j]}" style="stroke:red; stroke-width:4; fill:pink"/>`;
+    }
+    }
+      figurestext += `</g>`;
+
+    for(let i=0; i<k2; i++){ // extra points along left side
+      figurestext += `<circle cx="${10+5}" cy="${ycoordsdiagonal[i]-2}" r="2" stroke="gray" stroke-width="0" fill="gray" />`;
+    }
+    for(let i=0; i<k2; i++){ // extra points along left side
+      figurestext += `<circle cx="${xcoordsdiagonal[i]+2}" cy="${ycoords[k2]-5}" r="2" stroke="gray" stroke-width="0" fill="gray" />`;
+    }
+
+    return figurestext;
+  }
+
+  function buildSTS(m1, k, a, m2, scale, offset){
+    var squarexcoords = [];
+    var squareycoords = [];
+
+    let k2 = k/2;
+
+    squarexcoords[0] = offset[0];
+    squareycoords[0] = offset[1];
+    for(let i=1; i<=k2; i++){
+      squarexcoords[i] = 2*a*i*scale + offset[0];
+      squareycoords[i] = (2*a*(i-1)+m2)*scale + offset[1];
+    }
+    squarexcoords[k2+1] = (2*a*k2+m2)*scale + offset[0];
+    squareycoords[k2+1] = (2*a*k2+m2)*scale + offset[1];
+
+    var trianglexcoords = [];
+    var triangleycoords = [];
+    for(let i=0; i<k2; i++){
+      trianglexcoords[i]=(i*2+1)*a*scale+offset[0];
+      triangleycoords[i]=(i*2+1)*a*scale+offset[1];
+    }
+
+    let figurestext = ``;
+
+    // square grid
+    figurestext+=`<polygon points="${squarexcoords[0]},${squareycoords[0]} ${squarexcoords[0]},${squareycoords[k2+1]} ${squarexcoords[k2+1]},${squareycoords[k2+1]} ${squarexcoords[k2+1]},${squareycoords[0]}" style="stroke:green; stroke-width:4; fill:aquamarine" />`;
+    for(let i=1; i<=k2; i++){
+      figurestext += `<line x1="${squarexcoords[0]}" y1="${squareycoords[i]}" x2="${squarexcoords[k2+1]}" y2="${squareycoords[i]}" style="stroke:green; stroke-width:4; fill:aquamarine" />`;
+      figurestext += `<line x1="${squarexcoords[i]}" y1="${squareycoords[0]}" x2="${squarexcoords[i]}" y2="${squareycoords[k2+1]}" style="stroke:green; stroke-width:4; fill:aquamarine" />`;
+    }
+    
+    // triangles
+    var basictrianglex = [0,1,0];
+    var basictriangley = [0,0,-1];
+
+    figurestext += `<g opacity="0.5">`;
+    for(let i=0; i<=k2; i++){
+    for(let j=1; j<=k2+1; j++){
+      figurestext += `<polygon points="${basictrianglex[0]*a*scale+squarexcoords[i]},${basictriangley[0]*a*scale+squareycoords[j]} ${basictrianglex[1]*a*scale+squarexcoords[i]},${basictriangley[1]*a*scale+squareycoords[j]} ${basictrianglex[2]*a*scale+squarexcoords[i]},${basictriangley[2]*a*scale+squareycoords[j]}" style="stroke:red; stroke-width:4; fill:pink"/>`;      
+    }
+    }
+    for(let i=1; i<=k2; i++){
+    for(let j=1; j<=k2; j++){
+      figurestext += `<polygon points="${-1*basictrianglex[0]*a*scale+squarexcoords[i]},${-1*basictriangley[0]*a*scale+squareycoords[j]} ${-1*basictrianglex[1]*a*scale+squarexcoords[i]},${-1*basictriangley[1]*a*scale+squareycoords[j]} ${-1*basictrianglex[2]*a*scale+squarexcoords[i]},${-1*basictriangley[2]*a*scale+squareycoords[j]}" style="stroke:red; stroke-width:4; fill:pink"/>`;
+    }
+    }
+      figurestext += `</g>`;
+
+    // dots
+    for(let i=2; i<=k2+1; i++){ // extra points along left side
+      figurestext += `<circle cx="${offset[0]+5}" cy="${basictriangley[2]*a*scale+squareycoords[i]-2}" r="2" stroke="gray" stroke-width="0" fill="gray" />`;
+    }
+    
+    for(let i=0; i<k2; i++){ // extra points along left side
+      figurestext += `<circle cx="${basictrianglex[1]*a*scale+squarexcoords[i]+2}" cy="${squareycoords[k2+1]-5}" r="2" stroke="gray" stroke-width="0" fill="gray" />`;
+    }
+
+    return figurestext;
+  }
+
+  function buildSTT(m, k, a1, a2, scale, offset){ // case k odd
+    var squarexcoords = [];
+    var squareycoords = [];
+
+    let k2 = (k-1)/2;
+
+
+    squarexcoords[0] = offset[0];
+    squareycoords[0] = offset[1];
+    for(let i=1; i<=k2; i++){
+      squarexcoords[i] = 2*a1*i*scale + offset[0];
+      squareycoords[i] = (2*a1*(i-1)+a1+a2)*scale + offset[1];
+    }
+    squarexcoords[k2+1] = ((2*k2+1)*a1+a2)*scale + offset[0];
+    squareycoords[k2+1] = ((2*k2+1)*a1+a2)*scale + offset[1];
+
+    var trianglexcoords = [];
+    var triangleycoords = [];
+    for(let i=0; i<k2; i++){
+      trianglexcoords[i]=(i*2+1)*a1*scale+offset[0];
+      triangleycoords[i]=(i*2+1)*a1*scale+offset[1];
+    }
+
+    let figurestext = ``;
+
+    // square grid
+    figurestext += `<polygon points="${squarexcoords[0]},${squareycoords[0]} ${squarexcoords[0]},${squareycoords[k2+1]} ${squarexcoords[k2+1]},${squareycoords[k2+1]} ${squarexcoords[k2+1]},${squareycoords[0]}" style="stroke:green; stroke-width:4; fill:aquamarine" />`;
+    for(let i=1; i<=k2; i++){
+      figurestext += `<line x1="${squarexcoords[0]}" y1="${squareycoords[i]}" x2="${squarexcoords[k2+1]}" y2="${squareycoords[i]}" style="stroke:green; stroke-width:4; fill:aquamarine" />`;
+      figurestext += `<line x1="${squarexcoords[i]}" y1="${squareycoords[0]}" x2="${squarexcoords[i]}" y2="${squareycoords[k2+1]}" style="stroke:green; stroke-width:4; fill:aquamarine" />`;
+    }
+
+    // a1 triangles
+    var basictrianglex = [0,1,0];
+    var basictriangley = [0,0,-1];
+
+    figurestext += `<g opacity="0.5">`;
+    for(let i=0; i<=k2; i++){
+    for(let j=1; j<=k2+1; j++){
+      figurestext += `<polygon points="${basictrianglex[0]*a1*scale+squarexcoords[i]},${basictriangley[0]*a1*scale+squareycoords[j]} ${basictrianglex[1]*a1*scale+squarexcoords[i]},${basictriangley[1]*a1*scale+squareycoords[j]} ${basictrianglex[2]*a1*scale+squarexcoords[i]},${basictriangley[2]*a1*scale+squareycoords[j]}" style="stroke:red; stroke-width:4; fill:pink"/>`;
+    }
+    }
+    for(let i=1; i<=k2; i++){
+    for(let j=1; j<=k2; j++){
+      figurestext += `<polygon points="${-1*basictrianglex[0]*a1*scale+squarexcoords[i]},${-1*basictriangley[0]*a1*scale+squareycoords[j]} ${-1*basictrianglex[1]*a1*scale+squarexcoords[i]},${-1*basictriangley[1]*a1*scale+squareycoords[j]} ${-1*basictrianglex[2]*a1*scale+squarexcoords[i]},${-1*basictriangley[2]*a1*scale+squareycoords[j]}" style="stroke:red; stroke-width:4; fill:pink"/>`;
+    }
+    }
+
+    // a2 triangles across top and down right
+    for(let i=1; i<=k2+1; i++){
+      figurestext += `<polygon points="${-1*basictrianglex[0]*a2*scale+squarexcoords[i]},${-1*basictriangley[0]*a2*scale+squareycoords[0]} ${-1*basictrianglex[1]*a2*scale+squarexcoords[i]},${-1*basictriangley[1]*a2*scale+squareycoords[0]} ${-1*basictrianglex[2]*a2*scale+squarexcoords[i]},${-1*basictriangley[2]*a2*scale+squareycoords[0]}" style="stroke:blue; stroke-width:4; fill:cornflowerblue"/>`;      
+    }
+    for(let i=1; i<=k2; i++){
+      figurestext += `<polygon points="${-1*basictrianglex[0]*a2*scale+squarexcoords[k2+1]},${-1*basictriangley[0]*a2*scale+squareycoords[i]} ${-1*basictrianglex[1]*a2*scale+squarexcoords[k2+1]},${-1*basictriangley[1]*a2*scale+squareycoords[i]} ${-1*basictrianglex[2]*a2*scale+squarexcoords[k2+1]},${-1*basictriangley[2]*a2*scale+squareycoords[i]}" style="stroke:blue; stroke-width:4; fill:cornflowerblue"/>`;      
+    }
+
+    figurestext += `</g>`;
+    return figurestext;
+  }
+
+  function buildTST(a1, k, m, a2, scale, offset){ // case k odd
+    var squarexcoords = [];
+    var squareycoords = [];
+
+    // a1 triangle
+    var basictrianglex = [0,1,0];
+    var basictriangley = [0,0,-1];
+
+    var figurestext = ``;
+
+    figurestext += `<polygon points="${basictrianglex[0]*a1*scale+offset[0]},${basictriangley[0]*a1*scale+offset[1]+m*k*scale} ${basictrianglex[1]*a1*scale+offset[0]},${basictriangley[1]*a1*scale+offset[1]+m*k*scale} ${basictrianglex[2]*a1*scale+offset[0]},${basictriangley[2]*a1*scale+offset[1]+m*k*scale}" style="stroke:red; stroke-width:4; fill:pink"/>`;
+
+    let squarestext = buildsquares(m,k,scale,offset);
+    figurestext += `<g opacity="0.5">`;
+    figurestext += squarestext;
+    figurestext += `</g>`;
+
+    return figurestext;
+  }
+
+  function buildTTT(a1, k, a2, a3, scale, offset){
+    var squarexcoords = [];
+    var squareycoords = [];
+
+    var k2 = k/2;
+
+    // a1 triangle
+    var basictrianglex = [0,1,0];
+    var basictriangley = [0,0,-1];
+
+    var figurestext = ``;
+
+    figurestext += `<polygon points="${basictrianglex[0]*a1*scale+offset[0]},${basictriangley[0]*a1*scale+offset[1]+a1*scale} ${basictrianglex[1]*a1*scale+offset[0]},${basictriangley[1]*a1*scale+offset[1]+a1*scale} ${basictrianglex[2]*a1*scale+offset[0]},${basictriangley[2]*a1*scale+offset[1]+a1*scale}" style="stroke:red; stroke-width:4; fill:pink"/>`;
+
+    // square grid with sides 2xa2
+    let squarestext = build2atiles(k, a2, scale, add(offset,[0,a3*scale])); //buildsquares(2*a2,k2,scale,add(offset,[0,a3*scale]));
+    figurestext += `<g opacity="0.5">`;
+    figurestext += squarestext;
+    figurestext += `</g>`;
+
+    return figurestext;
+  }
+
+  function buildTTS(a1, k, a2, m, scale, offset){
+
+  }
   </script>
 
 
