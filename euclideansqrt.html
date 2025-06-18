@@ -348,26 +348,34 @@
 
     })
 
-    function buildquad(d,pairs,i) { // get ready for spaghetti!
-      var text=``;
-      if(pairs[i][0]!=0)
-        text += pairs[i][0];
-      if(pairs[i][1]!=0){
-        if(pairs[i][1]>0 && pairs[i][0]!=0){
-          text+= `+`;
-          if(pairs[i][1]!=1)
-            text+=pairs[i][1];
-        }
-        else{
-          if(pairs[i][1]!=1 && pairs[i][1]!=-1)
-            text+=pairs[i][1];
-          else if(pairs[i][1]==-1)
-            text+=`-`;
-        }
-      text += `\\sqrt{${d}}`;
+    function buildquad(d,pairs,i) {
+      // if one coordinate is zero, the other will be positive
+      if(pairs[i][0]==0)
+      {
+        if(Math.abs(pairs[i][1])==1)
+          return `\\sqrt{${d}}`;
+        else
+          return pairs[i][1]+`\\sqrt{${d}}`;
       }
-
-      return text;
+      else if(pairs[i][1]==0)
+      {
+        return pairs[i][0];
+      }
+      // neither coordinate is zero: print positive first, then negative
+      if(pairs[i][0]>0)
+      {
+        if(pairs[i][1]==-1)
+          return pairs[i][0]+`-\\sqrt{${d}}`;
+        else
+          return ``+pairs[i][0]+pairs[i][1]+`\\sqrt{${d}}`;
+      }
+      else
+      {
+        if(pairs[i][1]==1)
+          return `\\sqrt{${d}}`+pairs[i][0];
+        else
+          return pairs[i][1]+`\\sqrt{${d}}`+pairs[i][0];
+      }
     }
 
   function multiply(m,a){
@@ -548,7 +556,7 @@
       figurestext += `</g>`;
 
     for(let i=0; i<k2; i++){ // extra points along left side
-      figurestext += `<circle cx="${10+5}" cy="${ycoordsdiagonal[i]-2}" r="2" stroke="gray" stroke-width="0" fill="gray" />`;
+      figurestext += `<circle cx="${xcoords[i]+5}" cy="${ycoordsdiagonal[i]-2}" r="2" stroke="gray" stroke-width="0" fill="gray" />`;
     }
     for(let i=0; i<k2; i++){ // extra points along left side
       figurestext += `<circle cx="${xcoordsdiagonal[i]+2}" cy="${ycoords[k2]-5}" r="2" stroke="gray" stroke-width="0" fill="gray" />`;
