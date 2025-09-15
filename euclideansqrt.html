@@ -95,7 +95,7 @@
       dresult.innerHTML = terms;
       //dresult.insertAdjacentHTML("afterend",cf);
 
-      
+
       const convergents = document.querySelector('#convergents');
 
       var convergentstext = `<b>Convergents</b><br><br>\\[`;
@@ -106,7 +106,7 @@
       [A,Anext]=[Anext,cf[i]*Anext+A];
       [B,Bnext]=[Bnext,cf[i]*Bnext+B];
       }
-      convergentstext += `\\dots]\\]<br>`;
+      convergentstext += `\\dots\\]<br>`;
 
       convergents.innerHTML = convergentstext;
 
