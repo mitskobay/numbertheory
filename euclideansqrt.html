@@ -106,6 +106,8 @@
       [A,Anext]=[Anext,cf[i]*Anext+A];
       [B,Bnext]=[Bnext,cf[i]*Bnext+B];
       }
+      convergentstext += `\\frac{${Anext}}{${Bnext}},`;
+      
       convergentstext += `\\dots\\]<br>`;
 
       convergents.innerHTML = convergentstext;
