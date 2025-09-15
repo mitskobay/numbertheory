@@ -53,6 +53,8 @@
 
   <p id="dresult"></p>
 
+  <p id="convergents"></p>
+
   <p id="eucalg"></p>
   
   <!--p id="assign"></p-->
@@ -92,6 +94,22 @@
 
       dresult.innerHTML = terms;
       //dresult.insertAdjacentHTML("afterend",cf);
+
+      
+      const convergents = document.querySelector('#convergents');
+
+      var convergentstext = `<b>Convergents</b><br><br>\\[`;
+      A=1;B=0;
+      Anext=cf[0];Bnext=1;
+      for(let i = 1; i<nValue; i++){
+        convergentstext += `\\frac{${Anext}}{${Bnext}},`;
+      [A,Anext]=[Anext,cf[i]*Anext+A];
+      [B,Bnext]=[Bnext,cf[i]*Bnext+B];
+      }
+      convergentstext += `\\dots]\\]<br>`;
+
+      convergents.innerHTML = convergentstext;
+
 
       const eucalg = document.querySelector('#eucalg');
 
