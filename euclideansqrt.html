@@ -98,7 +98,7 @@
 
       const convergents = document.querySelector('#convergents');
 
-      var convergentstext = `<b>Convergents</b><br><br>\\[`;
+      var convergentstext = `<b>Convergents:</b><br><br>\\[`;
       A=1;B=0;
       Anext=cf[0];Bnext=1;
       for(let i = 1; i<nValue; i++){
@@ -107,7 +107,7 @@
       [B,Bnext]=[Bnext,cf[i]*Bnext+B];
       }
       convergentstext += `\\frac{${Anext}}{${Bnext}},`;
-      
+
       convergentstext += `\\dots\\]<br>`;
 
       convergents.innerHTML = convergentstext;
