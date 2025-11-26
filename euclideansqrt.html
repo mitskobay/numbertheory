@@ -61,6 +61,8 @@
 
   <p id="assign1"></p>
 
+  <p id="values"></p>
+
   <p id="figures"></p>
 
   <script>
@@ -159,8 +161,8 @@
       const assign1 = document.querySelector('#assign1');
 
       var assign1text = `<b>Assignments:</b><br><br>\\[\\begin{align}`;
-      var saveassign1text = [];
-      var saveassignments = [];
+      var saveassign1text = []; // elements e.g. "n"
+      var saveassignments = []; // elements [type1, type2, type3] e.g. [`T`,`S`, `T`]
 
       var type1 = `T`;
       var type2 = `S`;
@@ -239,6 +241,11 @@
 
       assign1.innerHTML = assign1text;
 
+      // values
+      const values = document.querySelector('#values');
+      var valuestext = text2 + text2prime + " " +text3 + text3prime; // `<b>Values:</b><br><br>\\[\\begin{align}`;
+      values.innerHTML = valuestext;
+      
       const figures = document.querySelector('#figures');
 
       //eapairs = [];
