@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Partition Calculations</title>
+
+  <style>
+    body {
+      font-family: Verdana, sans-serif;
+      background: lightblue;
+    }
+
+    input {
+      height: 1rem;
+      width: 3rem;
+      margin-top: 0.5rem;
+    }
+
+    .border{
+      background: white;
+      margin: 0 auto;
+      padding: 1rem;
+      width:570px;
+    }
+
+    .block {
+      width: 550px;
+      margin: 0 auto;
+    }
+  </style>
+  <script>
+    MathJax = {
+      tex: {
+        inlineMath: [['$', '$'], ['\\(','\\)']]
+      },
+      svg: {
+        fontCache: 'global'
+      }
+    };
+  </script>
+  <script type="text/javascript" id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js"></script>
+</head>
+<body>
+  <div class="border">
+  <div class="block">
+  <h1>Calculating the Partition Number</h1>
+
+  <input type="number" id="n" name="n" placeholder="n">
+  <button>Submit</button>
+
+<p id="nresult"></p>
+
+  <script>
+    class Gnomon {
+      constructor(data, remainder){
+        if(typeof data != 'array' || data.length !=2)
+          throw new TypeError('data must be a length 2 array');
+        if(data[0]<0 || data[1]<0 || remainder<0)
+          throw new RangeError('Values must be nonnegative.');
+        if(data[0]*data[1]<=remainder)
+          throw new RangeError('Remainder is too big.');
+
+        this.data=data;
+        this.remainder=remainder;
+        this.children=[];
+
+        populate();
+      }
+
+      populate() {
+        for(i=0; i<this.remainder; i++){
+          for(j=0;j<this.remainder-i-1; j++)
+          try {this.children.push(new Gnomon([i,j],this.remainder-i-j-1));}
+          catch (error) {}
+        }
+      }
+    }
+
+    const list = [];
+
+    const btn = document.querySelector('button');
+    const ninput = document.querySelector('#n');
+    const nresult = document.querySelector('#nresult');
+    root.children.push(new Node('child1'));
+    root.children.push(new Node('child2'));
+    btn.addEventListener('click', () => {
+      var nValue = ninput.value;
+
+      nresult.innerHTML = root.data +` entered.`;
+
+    });
+
+    function build(n){
+      // given n, create array of partition trees
+      const arr = [];
+      for(i=0; i<n; i++)
+        arr.push(new Gnomon([i,n-i-1],0));
+        for(x=1; x<=Math.sqrt(n)-1; x++){
+          for(i=1; i<n-x-1; i++)
+            arr.push(new Gnomon([i, n-i-x-1],x));
+        }
+
+      // count leaves
+    }
+</script>
+
+  <svg width="300" height="130" xmlns="http://www.w3.org/2000/svg">
+  <rect width="200" height="100" x="10" y="10" rx="2" ry="2" stroke="khaki" stroke-width="4" fill="lightyellow" />
+  <line x1="110" y1="10" x2="110" y2="110" stroke="khaki" stroke-width="2"/>
+</svg>
+</body>
+</html>
