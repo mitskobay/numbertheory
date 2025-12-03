@@ -345,7 +345,10 @@ input::placeholder {
       wrapper.appendChild(ylabel);
       wrapper.appendChild(yinput);
       wrapper.appendChild(xybutton);
-      document.getElementById('xyinput').appendChild(wrapper);
+
+      const xyContainer = document.getElementById('xyinput');
+      xyContainer.innerHTML = '';
+      xyContainer.appendChild(wrapper);
 
       MathJax.typesetPromise([wrapper]);
 
