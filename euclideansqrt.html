@@ -12,9 +12,52 @@
     }
 
     input {
-      height: 1rem;
-      width: 3rem;
+      height: 1.5rem;
+      width: 4rem;
       margin-top: 0.5rem;
+      background: #f0f0f0;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+
+      /* Use the same math‑font stack that MathJax loads for inline math */
+      font-family: "STIXGeneral", "Cambria Math", "Latin Modern Math", "Arial Unicode MS", serif;
+      /* Same visual size as the surrounding MathJax inline formula */
+      font-size: 1rem;
+      line-height: 1.5;
+      /* Make the colour identical to the surrounding text */
+      color: inherit;
+      /* Align the baseline of the numbers with the baseline of the surrounding LaTeX */
+      vertical-align: baseline;
+      /* Remove the default inner‑shadow that some browsers add on number inputs */
+      -moz-appearance: textfield;
+      -webkit-appearance: none;
+      appearance: none;
+    }
+
+input::placeholder {
+  font-style: italic;
+}
+
+    button {
+      height: 1.5rem;
+      margin-top: 0.5rem;
+      margin-left: 1rem;
+
+      background: #f0f0f0;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: .5;
+      line-height: 1.5rem;  
+    }
+
+    .input-label {
+      display: inline-block;
+      margin-right: 0.5rem;
+      vertical-align: middle;
     }
 
     .border{
@@ -63,6 +106,7 @@
 
   <p id="values"></p>
   <div id="xyinput"></div>
+  <div id="calculations"></div>
   
   <p id="figures"></p>
 
@@ -247,7 +291,14 @@
       // values section:
 
       const values = document.querySelector('#values');
-      var valuestext = `<b>Values:</b><br><br>\\[\\begin{align}`;
+      values.innerHTML = `<b>Values:</b><br>`
+
+      const calculations = document.querySelector('#calculations');
+
+      var xtext = text1 + text1prime;
+      var ytext = text2 + text2prime;
+
+      var valuestext = `<br>\\[\\begin{align}`;
       var valuestexttail = `\\end{align}\\]<br>`;
 
       var xvalue = 0;
@@ -256,73 +307,70 @@
 
       for(var i = nValue-1; i>=0; i--){
         zvalue = cf[i]*xvalue+yvalue+saveoffsets[i];
-        valuestexttail = zvalue + ` &=${cf[i]}\\cdot ` + xvalue + `+` + yvalue +`+` + saveoffsets[i]+`\\\\` + valuestexttail;
+        valuestexttail = zvalue + ` &=${cf[i]}\\cdot ` + xvalue + `+` + yvalue +(saveoffsets[i]==0?'':`+` + saveoffsets[i])+`\\\\` + valuestexttail;
         yvalue = xvalue;
         xvalue = zvalue;
 
       }
 
       valuestext += valuestexttail;
-      /*
-        <input type="number" id="x" name="x" placeholder="${xtext}=0">
-        <input type="number" id="y" name="y" placeholder="${ytext}=0">
-        <button id="button2">Calculate</button>
-      */
-      // `<b>Values:</b><br><br>\\[\\begin{align}`;
-/*
-      const xybtn = document.querySelector('#button2');
-      const xinput = document.querySelector('#x');
-      const yinput = document.querySelector('#y');
 
-      xybtn.addEventListener('click', () => {
-        const xValue = xinput.value;
-        const yValue = yinput.value;
+      calculations.innerHTML = valuestext;
 
-        if(!xinput || !xValue) xValue=0;
-        if(!yinput || !yValue) yValue=0;
-
-        valuestext += 'xValue=' + xValue + " " + 'yValue=' + yValue + '<br>';
-
-        values.innerHTML = valuestext;
-      });
-*/
-      values.innerHTML = valuestext;
       // Input and buttons:
+      
       const wrapper = document.createElement('div');
 
-      var xtext = text1 + text1prime;
-      var ytext = text2 + text2prime;
+      const xlabel = document.createElement('span');
+      xlabel.className = 'input-label';
+      xlabel.innerHTML = `\\(${xtext}=\\)`;
+
+      const ylabel = document.createElement('span');
+      ylabel.className = 'input-label';
+      ylabel.innerHTML = `\\(\\quad ${ytext}=\\)`;
 
       const xinput = document.createElement('input');
       xinput.type = "number";
-      xinput.placeholder = xtext + "=0";
       xinput.value = 0;
 
       const yinput = document.createElement('input');
       yinput.type = "number";
-      yinput.placeholder = ytext + "=0";
       yinput.value = 0;
 
       const xybutton = document.createElement('button');
-      xybutton.textContent = "calculate";
+      xybutton.textContent = "Recalculate";
 
-      xybutton.addEventListener('click', function () {
-        const xValue = xinput.value;
-        const yValue = yinput.value;
-
-        if(!xinput || !xValue) xValue=0;
-        if(!yinput || !yValue) yValue=0;
-
-        var inputtext = 'xValue=' + xValue + " " + 'yValue=' + yValue + '<br>';
-        const valuesp = document.createElement('p');
-        valuesp.innerHTML = inputtext;
-        document.getElementById('values').appendChild(valuesp);
-      });
-
+      wrapper.appendChild(xlabel);
       wrapper.appendChild(xinput);
+      wrapper.appendChild(ylabel);
       wrapper.appendChild(yinput);
       wrapper.appendChild(xybutton);
       document.getElementById('xyinput').appendChild(wrapper);
+
+      MathJax.typesetPromise([wrapper]);
+
+
+      xybutton.addEventListener('click', function () {
+        var xvalue = parseInt(xinput.value) || 0;
+        var yvalue = parseInt(yinput.value) || 0;
+        var zvalue = 0;
+
+        const values = document.querySelector('#calculations');
+        var valuestext = `<br>\\[\\begin{align}`;
+        var valuestexttail = `\\end{align}\\]<br>`;
+
+        for(var i = nValue-1; i>=0; i--){
+          zvalue = cf[i]*xvalue+yvalue+saveoffsets[i];
+          valuestexttail = zvalue + ` &=${cf[i]}\\cdot ` + xvalue + `+` + yvalue + (saveoffsets[i]==0?'':`+` + saveoffsets[i]) +`\\\\` + valuestexttail;
+          yvalue = xvalue;
+          xvalue = zvalue;
+        }
+        valuestext += valuestexttail;
+        calculations.innerHTML = valuestext;
+        
+        // Re-render MathJax for the updated content
+        MathJax.typesetPromise([values]);
+      });
 
       // figures section:
 
