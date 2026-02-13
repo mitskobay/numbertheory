@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Some Abundant Density Calculations</title>
+
+        <style>
+            body {
+                font-family: Verdana, sans-serif;
+                background: lightblue;
+            }
+
+            input {
+                height: 1rem;
+                width: 3rem;
+                margin-top: 0.5rem;
+            }
+
+            .border{
+                background: white;
+                margin: 0 auto;
+                padding: 1rem;
+                width: 570px;
+            }
+
+            .block{
+                width: 550px;
+                margin: 0 auto;
+            }
+        </style>
+        <script>
+            MathJax = {
+            tex: {
+                inlineMath: [['$', '$'], ['\\(','\\)']]
+            },
+            svg: {
+                fontCache: 'global'
+            }
+            };
+        </script>
+        <script type="text/javascript" id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js"></script>
+    </head>
+
+    <body>
+        <div class="border">
+            <div class="block">
+                <h1> Some Abundant Density Calculations</h1>
+
+                <h2>Del&eacute;glise Program</h2>
+                <p>Given positive $y$, define 
+                    $$\Lambda_y(r)=\prod_p\left(1+\frac{\rho(p)}{p}+\frac{\rho(p^2)}{p^2}+\cdots\right),$$
+                    where
+                    $$\rho(p^\alpha)=\left(1+\frac{1}{p}+\cdots+\frac{1}{p^\alpha}\right)^r-\left(1+\frac{1}{p}+\cdots+\frac{1}{p^{\alpha-1}}\right)^r.$$
+                    We use the bounds
+                    $$\sum_{\alpha\geq 0}\frac{\rho(p^\alpha)}{p^\alpha}\leq 1+\frac{(1+1/p)^r-1}{p}+r\left(\frac{1}{1-1/p}\right)^{r-1}\frac{1}{p^4-p^2}$$
+                    for $p\leq 10^6$, and
+                    $$\prod_{p>10^6}\left(\sum_{\alpha\geq 0}\frac{\rho(p^\alpha)}{p^\alpha}\right)\leq 1+\frac{r}{10^7}.$$
+                </p>
+
+                <input type="number" id="y" name="y" placeholder="y">
+                <input type="number" id="r" name="r" placeholder="r">
+                <button id="button1">Calculate</button>
+
+                <p id="calculation"></p>
+
+                <script>
+                    const btn1 = document.querySelector('#button1');
+                    const yinput = document.querySelector('#y');
+                    const rinput = document.querySelector('#r');
+                    const result = document.querySelector('#calculation');
+
+                    // We need primes up to 10^6!
+                    function sieve(n) {
+                        const sieve = []; // Used to mark composite numbers
+                        const primes_set = []; // Used to store the resulting prime numbers
+                        for (let i = 2; i <= n; ++i) {
+                            if (!sieve[i]) {
+                                // If the number is not marked, it is prime
+                                primes_set.push(i);
+                                // Mark all multiples of the current prime as composite
+                                for (let j = i * 2; j <= n; j += i) {
+                                    sieve[j] = true;
+                                }
+                            }
+                        }
+                        return primes_set;
+                    }
+
+                    btn1.addEventListener('click', () => {
+                        const yvalue = yinput.value;
+                        const rvalue = rinput.value;
+                        const primes = sieve(10**6);
+                        
+                        for(var yindex=0; primes[yindex]<=yvalue; ++yindex){}
+                        yindex--;
+
+                        var lambda = 1;
+                        
+                        for(var i=yindex+1; i<primes.length; i++){
+                            const p=primes[i];
+                            lambda *= 1+ ((1+1.0/p)**rvalue-1)/p+rvalue/(1-1.0/p)**(rvalue-1)/(p*p)/(p*p-1);
+                        }
+                        lambda *= 1+rvalue/10**7;
+
+                        var text = `<p>$$\\Lambda_{${yvalue}}(${rvalue})=${lambda}$$</p>`;
+
+                        text += `<br>PARI/GP</br>`;
+                        text += `<br> $\\Lambda_{500}(1)=1.0002732981991635698350534385457419796$`;
+                        text += `<br> $\\Lambda_{500}(2)=1.0005469570666967918081363854297823432$`;
+                        result.innerHTML = text;
+
+                        MathJax.typesetPromise();
+                    })
+                </script>
+            </div>
+        </div>
+    </body>
+</html>
